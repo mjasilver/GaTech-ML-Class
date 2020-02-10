@@ -12,6 +12,13 @@ Code Files:
 	ps1_UFC.py
 	ps1_Titanic.py
 
+Data Files:
+	UFC: 
+		preprocessed_data.csv
+	Titanic:
+		gender_submission.csv
+		test.csv
+		train.csv
 
 To run UFC data:
 	Place UFC data in folder "UFC_Data". Have "UFC_Data" folder in same directory as code
