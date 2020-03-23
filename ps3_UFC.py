@@ -124,17 +124,17 @@ def main():
     
 
     #PART 4
-    '''
+    
 #    print('------PCA on NN------')
     neural_net(x_PCA,df_y)
 #    print('ICA on NN')
     neural_net(x_ICA,df_y)
 #    print('RP on NN')
     neural_net(x_RP,df_y)
-    '''
+    
     
     #PART 5
-    '''
+    
     print('Beginning NN')    
 
     print('------PCA on NN------')
@@ -175,7 +175,7 @@ def main():
     x_RP=pd.DataFrame(x_RP)
     x_RP['clustering']=em_RP
     neural_net(x_RP,df_y)#(x_PCA,df_y)
-    '''
+    
     
 #    print('df_y type:',type(df_y))
 #    print('df_y head:',df_y.head())

@@ -75,21 +75,21 @@ def main():
 #    raise NotImplementedError
 
     #Part 1            
-#    k_means_labels=k_means(df_X,df_y)
-#    exp_max_labels=exp_max(df_X,df_y)
+    k_means_labels=k_means(df_X,df_y)
+    exp_max_labels=exp_max(df_X,df_y)
 
 #    raise NotImplementedError
 
     #Part 2
 #    print(df_X.head())
-#    x_PCA=principle_components_analysis(df_X)
-#    x_ICA=independent_components_analysis(df_X)    
+    x_PCA=principle_components_analysis(df_X)
+    x_ICA=independent_components_analysis(df_X)    
     x_RP=random_projection(df_X)
-#    x_VT=variance_threshold(df_X)
+    x_VT=variance_threshold(df_X)
 
 
     #Part 3
-    '''        
+            
     print('Running KMEANS on dimensionality reductions...')
     print('PCA')
 #    print('df_y head',df_y.head())
@@ -104,22 +104,22 @@ def main():
     k_means_VT=k_means(x_VT,df_y)
     print('column names',col_names)
     print('column means',col_means)
-    '''    
+        
 
         
     print('Running EXPECATION MAXIMIZATION on dimensionality reductions...')
     print('PCA')
-#    em_PCA=exp_max(x_PCA,df_y)
+    em_PCA=exp_max(x_PCA,df_y)
 #    exp_max(x_PCA)
-#    print('ICA')
-##    em_ICA=exp_max(x_ICA,df_y)
-#    print('RP')
-##    em_RP=exp_max(x_RP,df_y)
-##    em_VT=exp_max(x_VT,df_y)
+    print('ICA')
+    em_ICA=exp_max(x_ICA,df_y)
+    print('RP')
+    em_RP=exp_max(x_RP,df_y)
+    em_VT=exp_max(x_VT,df_y)
     
 
     #PART 4
-    '''
+    
     print('------PCA on NN------')
     neural_net(x_PCA,df_y)
     print('ICA on NN')
@@ -130,12 +130,12 @@ def main():
     
     print('------VT on NN------')
     neural_net(x_VT,df_y)
-    '''
+    
     
     #PART 5
     print('Beginning NN')    
 
-    '''    
+        
     print('------PCA on NN------')
 #    neural_net_RHC(df_X,df_y)
 #    print('type kmeans_pca:',type(k_means_PCA))
@@ -149,10 +149,10 @@ def main():
     x_PCA=pd.DataFrame(x_PCA)
     x_PCA['clustering']=em_PCA
     neural_net(x_PCA,df_y)#(x_PCA,df_y)
-    '''
+    
     
 
-    '''
+    
     print('------ICA on NN------')   
     
     x_ICA=pd.DataFrame(x_ICA)
@@ -162,10 +162,10 @@ def main():
     x_ICA=pd.DataFrame(x_ICA)
     x_ICA['clustering']=em_ICA
     neural_net(x_ICA,df_y)#(x_PCA,df_y)
-    '''
+    
 
 
-    '''
+    
     print('------RP on NN------')
     x_RP=pd.DataFrame(x_RP)
     x_RP['clustering']=k_means_RP
@@ -173,9 +173,9 @@ def main():
     x_RP=pd.DataFrame(x_RP)
     x_RP['clustering']=em_RP
     neural_net(x_RP,df_y)#(x_PCA,df_y)
-    '''
+    
 
-    '''   
+    
     print('------VT on NN------')
     x_VT=pd.DataFrame(x_VT)
     x_VT['clustering']=k_means_VT
@@ -183,7 +183,7 @@ def main():
     x_VT=pd.DataFrame(x_VT)
     x_VT['clustering']=em_VT
     neural_net(x_VT,df_y)#(x_PCA,df_y)
-    '''
+    
 
     
 #    print('df_y type:',type(df_y))
