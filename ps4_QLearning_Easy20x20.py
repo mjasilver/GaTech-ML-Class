@@ -73,7 +73,7 @@ def main():
 #    q_learning(game="FrozenLake-v0",num_episodes=100000,max_timesteps=1000,learning_rate=0.1,discount_rate=0.99,exploration_rate=1,exploration_decay_rate=0.001,
 #                    start_exploration_rate=1.0,end_exploration_rate=0.01, decay='exponential')
     #Linear Decay
-    q_learning(game="FrozenLake-v0",num_episodes=10000,max_timesteps=1000,learning_rate=0.1,discount_rate=0.99,exploration_rate=1,exploration_decay_rate=0.001,
+    q_learning(game="FrozenLake-v0",num_episodes=50000,max_timesteps=1000,learning_rate=0.1,discount_rate=0.99,exploration_rate=1,exploration_decay_rate=0.001,
                     start_exploration_rate=1.0,end_exploration_rate=0.01, decay='linear',enhanced_exploitation=True)
     return
 
@@ -92,7 +92,7 @@ def q_learning(game="FrozenLake-v0",num_episodes=10000,max_timesteps=100,learnin
 ###    env=gym.make("FrozenLake8x8-v0")    
 
 
-    env._max_episode_steps=5000  #Required or the environment won't process for more than 100 steps and the values will be all fucked upppppppp
+#    env._max_episode_steps=5000  #Required or the environment won't process for more than 100 steps and the values will be all fucked upppppppp
 
     #Create Q-Table
     action_space=env.action_space.n
@@ -107,7 +107,7 @@ def q_learning(game="FrozenLake-v0",num_episodes=10000,max_timesteps=100,learnin
     #Create reward tracking array
     reward_by_episode=[]
     exploration_by_episode=[]
-
+    q_delta_by_episode=[]
 
     a_time=time.time()
     for i_episode in range(num_episodes):
@@ -115,6 +115,10 @@ def q_learning(game="FrozenLake-v0",num_episodes=10000,max_timesteps=100,learnin
         reward_total = 0
         done = False
 
+        if i_episode%1000==0:
+            print('i',i_episode)
+
+        q_last=np.copy(q_table)
         for t in range(max_timesteps):
             state_visitation_table[state]=state_visitation_table[state]+1
             #Choose the argmax action or a random action
@@ -159,6 +163,12 @@ def q_learning(game="FrozenLake-v0",num_episodes=10000,max_timesteps=100,learnin
             reward_by_episode.append(reward_total)
             exploration_by_episode.append(exploration_rate)
 
+        #Track the change in the q-table
+#        print('at',i_episode,':',q_table,q_last)
+        q_change=np.absolute(q_table-q_last)
+#        print('at',i_episode,':',np.sum(q_change))
+        q_delta=np.sum(q_change)
+        q_delta_by_episode.append(q_delta)
     env.close()
     b_time=time.time()
 
@@ -167,8 +177,22 @@ def q_learning(game="FrozenLake-v0",num_episodes=10000,max_timesteps=100,learnin
     print(q_table)
 
     #Calc and print reward/1000 episodes
+#    print(type(q_delta_by_episode),'AT FIRST: q_delta_by_episode')
+#    print(q_delta_by_episode)
     rewards_per_thousand_episodes=np.split(np.array(reward_by_episode),num_episodes/1000)
     exploration_per_thousand_episodes=np.split(np.array(exploration_by_episode),num_episodes/1000)
+
+    q_delta_per_thousand_episodes=[]
+    episode_num=[]
+    for r in np.arange(0,num_episodes,1000):
+        print('loop',r)
+        ave=np.sum(q_delta_by_episode[r:r+1000])/1000
+        print('ave',ave)
+        q_delta_per_thousand_episodes.append(ave)
+        episode_num.append(r)
+#    q_delta_per_thousand_episodes=np.split(np.array(q_delta_by_episode),num_episodes/1000)
+    print(type(q_delta_per_thousand_episodes),'q_delta_per_thousand_episodes')
+    print(q_delta_per_thousand_episodes)
 
     print("AVE EXPLORATION RATE BY EPISODE(K)")
     count=1000
@@ -207,6 +231,7 @@ def q_learning(game="FrozenLake-v0",num_episodes=10000,max_timesteps=100,learnin
     
     #Chart 1: Value Function, S=3 for different discount factors
 #    discount_array=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.99]
+    sns.set(font_scale=1.0)
     plt.plot(range(num_episodes),exploration_by_episode)#,discount_array,entropy_base)#(range(1,number_components),silhouette_vector)
     plt.title('Q-Learning: Exploration Rate by Episode')#'Information Gain by Cluster'
     plt.xlabel('Episode Number')
@@ -214,6 +239,19 @@ def q_learning(game="FrozenLake-v0",num_episodes=10000,max_timesteps=100,learnin
     plt.legend([decay])
 #    plt.ylim((0,1.0))
     plt.show()
+
+    #Chart 2: Q-Learning q-delta
+#    discount_array=[0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,0.99]
+#    plt.plot(np.arange(0,num_episodes,100),q_delta_per_hundred_episodes)#,discount_array,entropy_base)#(range(1,number_components),silhouette_vector)
+    
+    plt.plot(episode_num,q_delta_per_thousand_episodes)#,discount_array,entropy_base)#(range(1,number_components),silhouette_vector)
+    plt.title('Q-Learning: Average Change in Q-Table by Episode')#'Information Gain by Cluster'
+    plt.xlabel('Episode Number, Thousands')
+    plt.ylabel('Q-Table Delta')
+#    plt.legend([decay])
+#    plt.ylim((0,1.0))
+    plt.show()
+
 
     rewards_policy=run_frozenlake_policy(env,1000,max_timesteps,q_table,discount_rate)
     print('AVE REWARD FOR LEARNED POLICY:',np.mean(rewards_policy))
